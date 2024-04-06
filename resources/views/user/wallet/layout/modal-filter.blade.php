@@ -148,7 +148,11 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a type="button" class="btn btn-warning" href="{{ route('wallet.transactions' , $wallet->id)  }}" >Reset</a>
+                    @if (Request::routeIs('recycle-bin.wallet.transactions'))
+                        <a type="button" class="btn btn-warning" href="{{ route('recycle-bin.wallet.transactions' , $wallet->id)  }}" >Reset</a>
+                    @elseif (Request::routeIs('wallet.transactions'))
+                        <a type="button" class="btn btn-warning" href="{{ route('wallet.transactions' , $wallet->id)  }}" >Reset</a>
+                    @endif
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Filter</button>
                 </div>
