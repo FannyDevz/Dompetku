@@ -1,0 +1,34 @@
+{
+    "Wallet" : {
+        "id" : 1,
+        "name" : "Nama Wallet",
+        "description" : "This is my first wallet",
+        "icon" : "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        "color" : ["purple", "blue", "red", "green"],
+        "created_at" : "2022-01-01 00:00:00.000000",
+        "updated_at" : "2022-01-01 00:00:00.000000",
+        "deleted_at" : null
+    },
+
+    "Category" : {
+        "id" : 1,
+        "name" : "Food",
+        "type" : ["Income" ,"Outcome"],
+        "created_at" : "2022-01-01 00:00:00.000000",
+        "updated_at" : "2022-01-01 00:00:00.000000",
+        "deleted_at" : null
+    },
+
+    "Transaction" : {
+        "id" : 1,
+        "name" : "First Transaction",
+        "wallet_id" : 1,
+        "category_id" : 1,
+        "amount" : 10000,
+        "date" : "2022-01-01",
+        "note" : "This is my first transaction",
+        "created_at" : "2022-01-01 00:00:00.000000",
+        "updated_at" : "2022-01-01 00:00:00.000000",
+        "deleted_at" : null
+    }
+}
