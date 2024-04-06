@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <form action="" method="GET">
+            <form action="" id="filterForm" method="GET">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6 ">
@@ -55,26 +55,36 @@
                                 <input type="number" name="total_end" id="total_end" class="form-control" value="{{ Request::get('total_end') }}">
                             </div>
                         </div>
-                        <div class="col-12 ">
-                            <div class="divider">
-                                <div class="divider-text">Date Created</div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6 ">
-                            <div class="form-group">
-                                <label for="date_created_start">From</label>
-                                <input type="date" name="date_created_start" id="date_created_start" class="form-control" value="{{ Request::get('date_created_start') }}">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-6 ">
-                            <div class="form-group">
-                                <label for="date_created_end">To</label>
-                                <input type="date" name="date_created_end" id="date_created_end" class="form-control" value="{{ Request::get('date_created_end') }}">
-                            </div>
-                        </div>
+{{--                        <div class="col-12 ">--}}
+{{--                            <div class="divider">--}}
+{{--                                <div class="divider-text">Date Created</div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                        <div class="col-12 col-md-6 col-lg-6 ">--}}
+{{--                            <div class="form-group">--}}
+{{--                                <label for="date_created_start">From</label>--}}
+{{--                                <input type="date" name="date_created_start" id="date_created_start" class="form-control" value="{{ Request::get('date_created_start') }}">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                        <div class="col-12 col-md-6 col-lg-6 ">--}}
+{{--                            <div class="form-group">--}}
+{{--                                <label for="date_created_end">To</label>--}}
+{{--                                <input type="date" name="date_created_end" id="date_created_end" class="form-control" value="{{ Request::get('date_created_end') }}">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                         <div class="col-12 ">
                             <div class="divider">
                                 <div class="divider-text">Category</div>
+                            </div>
+                        </div>
+                        <div class="col-12 ">
+                            <div class="form-group">
+                                <label for="type">Type</label>
+                                <select name="type" id="type" class="form-control" >
+                                    <option value="" {{ Request::get('type') == '' ? 'selected' : '' }}>All</option>
+                                    <option value="income" {{ Request::get('type') == 'income' ? 'selected' : '' }}>Income</option>
+                                    <option value="outcome" {{ Request::get('type') == 'outcome' ? 'selected' : '' }}>Outcome</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6 ">
@@ -118,27 +128,27 @@
                         </div>
                         <div class="col-12 col-md-6 col-lg-6 ">
                             <div class="form-group">
-                                <label for="sort">Sort</label>
-                                <select name="sort" id="sort" class="form-control">
-                                    <option value="id" {{ Request::get('sort') == 'id' ? 'selected' : '' }}>ID</option>
-                                    <option value="name" {{ Request::get('sort') == 'name' ? 'selected' : '' }}>Name</option>
-                                    <option value="date" {{ Request::get('sort') == 'date' ? 'selected' : '' }}>Date</option>
-                                    <option value="created_at" {{ Request::get('sort') == 'created_at' ? 'selected' : '' }}>Date Created</option>
+                                <label for="by">Sort</label>
+                                <select name="by" id="by" class="form-control">
+                                    <option value="date" {{ Request::get('by') == 'date' ? 'selected' : '' }}>Date</option>
+                                    <option value="name" {{ Request::get('by') == 'name' ? 'selected' : '' }}>Name</option>
+                                    <option value="created_at" {{ Request::get('by') == 'created_at' ? 'selected' : '' }}>Date Created</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6 ">
                             <div class="form-group">
-                                <label for="by">By</label>
-                                <select name="by" id="by" class="form-control">
-                                    <option value="desc" {{ Request::get('by') == 'desc' ? 'selected' : '' }}>DESC</option>
-                                    <option value="asc" {{ Request::get('by') == 'asc' ? 'selected' : '' }}>ASC</option>
+                                <label for="sort">By</label>
+                                <select name="sort" id="sort" class="form-control">
+                                    <option value="desc" {{ Request::get('sort') == 'desc' ? 'selected' : '' }}>DESC</option>
+                                    <option value="asc" {{ Request::get('sort') == 'asc' ? 'selected' : '' }}>ASC</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <a type="button" class="btn btn-warning" href="{{ route('wallet.transactions' , $wallet->id)  }}" >Reset</a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Filter</button>
                 </div>

@@ -132,10 +132,9 @@
                                                 <br>
                                                 <span class="text-muted text-sm">{{ $transaction->note }}</span>
                                             </td >
-                                            <td>
+                                            <td class="text-nowrap">
                                                 <div class="align-items-end justify-content-end">
-
-                                                    {{ $transaction->category_type === 'Income' ? '' : '-' }} Rp {{ number_format( $transaction->amount, 0, ',', '.') }}
+                                                    Rp {{ $transaction->category_type === 'Income' ? '' : '-' }}{{ number_format( $transaction->amount, 0, ',', '.') }}
                                                     <br>
                                                     {{ $transaction->category_name }}
                                                 </div>

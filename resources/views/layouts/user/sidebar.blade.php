@@ -51,8 +51,8 @@
                     </a>
                 </li>
                 <li
-                    class="sidebar-item  ">
-                    <a href="{{ route('wallet.index') }}" class='sidebar-link'>
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['reports.index']) ? 'active' : '' }}  ">
+                    <a href="{{ route('reports.index') }}" class='sidebar-link'>
                         <i class="bi bi-file-spreadsheet-fill"></i>
                         <span>Report</span>
                     </a>
@@ -83,8 +83,8 @@
                     </ul>
                 </li>
                 <li
-                    class="sidebar-item  ">
-                    <a href="#" class='sidebar-link'>
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['reports.index']) ? 'active' : '' }}  ">
+                    <a href="{{route('reports.index')}}" class='sidebar-link '>
                         <i class="bi bi-file-earmark-arrow-up"></i>
                         <span>Import CSV</span>
                     </a>

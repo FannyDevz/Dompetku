@@ -41,7 +41,7 @@
                                                         <label for="wallet_id">Wallet</label>
                                                         <select class="form-control" name="wallet_id" id="wallet_id">
                                                             @foreach($wallets as $wallet)
-                                                                <option value="{{ $wallet->id }}">{{ $wallet->name }}</option>
+                                                                <option value="{{ $wallet->id }}" {{ Request::get('wallet_id') == $wallet->id ? 'selected' : '' }}>{{ $wallet->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -52,7 +52,7 @@
                                                         <select class="form-control" name="month" id="month">
                                                             <option value="all">All</option>
                                                             @foreach($months as $key => $month)
-                                                                <option value="{{ $key + 1 }}">{{ $month }}</option>
+                                                                <option value="{{ $key + 1 }}" {{ Request::get('month') == $key + 1 ? 'selected' : '' }}>{{ $month }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -61,7 +61,7 @@
                                                         <select class="form-control" name="year" id="year">
                                                             <option value="all">All</option>
                                                             @foreach($years as $year)
-                                                                <option value="{{ $year }}">{{ $year }}</option>
+                                                                <option value="{{ $year }}" {{ Request::get('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -83,10 +83,70 @@
                 <div class="card p-2">
                     <div class="card-body">
                         <div class="row">
-                            <div class="table-responsive-sm">
-                                <table class="table table-hover">
+                            <div class="col-12 col-md-6 col-lg-6 table-responsive-sm">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" >Income Transactions</th>
+                                    </tr>
+                                    </thead>
                                     <tbody>
-
+                                    @if (empty($transactions['income']))
+                                        <tr>
+                                            <td colspan="2">No data</td>
+                                        </tr>
+                                    @endif
+                                    @foreach($transactions['income'] as $incomeTransaction)
+                                        <tr>
+                                            <td >{{ $incomeTransaction['category_name'] }} ({{ $incomeTransaction['transaction_count'] }})</td>
+                                            <td class="text-nowrap">Rp {{ number_format($incomeTransaction['total_amount'], 0, ',', '.') }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6 table-responsive-sm">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="2" >Outcome Transactions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if (empty($transactions['outcome']))
+                                        <tr>
+                                            <td colspan="2">No data</td>
+                                        </tr>
+                                    @endif
+                                    @foreach($transactions['outcome'] as $outcomeTransaction)
+                                        <tr>
+                                            <td >{{ $outcomeTransaction['category_name'] }} ({{ $outcomeTransaction['transaction_count'] }})</td>
+                                            <td class="text-nowrap">Rp {{ $outcomeTransaction['total_amount'] != 0 ? '-' : '' }}{{ number_format($outcomeTransaction['total_amount'], 0, ',', '.') }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-12 col-md-12 col-lg-12 table-responsive-sm">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="3" >Total Transactions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Total Income</td>
+                                            <td class="text-nowrap font-bold">Rp {{ number_format($transactions['total_income'], 0, ',', '.') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Outcome</td>
+                                            <td class="text-nowrap font-bold">Rp {{ $transactions['total_outcome'] != 0 ? '-' : '' }}{{ number_format($transactions['total_outcome'], 0, ',', '.') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-bold">Total</td>
+                                            <td class="text-nowrap font-bold">Rp {{ number_format($transactions['total'], 0, ',', '.') }}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>

@@ -117,7 +117,9 @@ class WalletController extends Controller
         $transactions = DB::table('transactions')->where('wallet_id', $walletId)
             ->leftJoin('categories', 'categories.id', '=', 'transactions.category_id')
             ->select('transactions.*', 'categories.id as category_id', 'categories.name as category_name', 'categories.type as category_type');
+        $transactions = $this->filtering( $transactions, $request );
 
+//        $transactions = $transactions->get();
         $transactions = Helper::pagination( $transactions, $request );
         $totalIncome = 0;
         $totalOutcome = 0;
@@ -180,6 +182,7 @@ class WalletController extends Controller
         $transactions = DB::table('transactions')->where('wallet_id', $walletId)
             ->leftJoin('categories', 'categories.id', '=', 'transactions.category_id')
             ->select('transactions.*', 'categories.name as category_name', 'categories.type as category_type');
+        $transactions = $this->filtering( $transactions, $request );
 
         $transactions = Helper::pagination( $transactions, $request );
 
@@ -219,5 +222,54 @@ class WalletController extends Controller
         $wallet = Wallet::onlyTrashed()->find($id);
         $wallet->forceDelete();
         return redirect()->route('recycle-bin.wallet.index')->with('success', 'Wallet Permanently Deleted Successfully');
+    }
+
+    private function filtering($transactions, $request){
+
+        if ($request->get('name')) {
+            $transactions = $transactions->where('transactions.name','like','%'.$request->get('name').'%');
+        }
+        if ($request->get('note')){
+            $transactions = $transactions->where('transactions.note','like','%'.$request->get('note').'%');
+        }
+        if ($request->get('date_start') || $request->get('date_end')) {
+            if ($request->get('date_start')) {
+                $transactions = $transactions->whereDate('transactions.date', '>=', $request->get('date_start'));
+            }
+            if ($request->get('date_end')) {
+                $transactions = $transactions->whereDate('transactions.date', '<=', $request->get('date_end'));
+            }
+        }
+        if ($request->get('total_start') || $request->get('total_end')) {
+            if ($request->get('total_start')) {
+                $transactions = $transactions->where('transactions.amount', '>=', $request->get('total_start'));
+            }
+            if ($request->get('total_end')) {
+                $transactions = $transactions->where('transactions.amount', '<=', $request->get('total_end'));
+            }
+        }
+        if ($request->get('type')) {
+            if ($request->get('type') === 'income') {
+                $transactions = $transactions->where('categories.type', 'Income');
+                if ($request->get('income') != '') {
+                    $transactions = $transactions->where('category_id', $request->get('income'));
+                }
+            } elseif ($request->get('type') === 'outcome') {
+                $transactions = $transactions->where('categories.type', 'Outcome');
+                if ($request->get('outcome') != '') {
+                    $transactions = $transactions->where('category_id', $request->get('outcome'));
+                }
+            }
+        }
+
+        if ($request->has('sort')) {
+            $sort = $request->input('sort');
+            $filter = $request->input('by');
+            $transactions->orderBy("transactions.{$filter}", $sort);
+        } else {
+            $transactions->orderBy("created_at", 'desc');
+        }
+
+        return $transactions;
     }
 }
