@@ -4,11 +4,11 @@
     "start_url": "/index.php",
     "background_color": "#6777ef",
     "description": "Dompetku is an application that helps you keep track of your expenses and income.",
-    "display": "fullscreen",
+    "display": "standalone",
     "theme_color": "#ffffff",
     "icons": [
         {
-            "src": "logo.PNG",
+            "src": "logo.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
