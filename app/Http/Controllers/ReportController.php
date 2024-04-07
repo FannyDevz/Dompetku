@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        $wallets = Wallet::select('id', 'name')->get();
+        $wallets = Wallet::select('id', 'name')->where('user_id', Auth::user()->id)->get();
         $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         $years = Transaction::select(DB::raw('YEAR(date) as year'))->distinct()->pluck('year');
 

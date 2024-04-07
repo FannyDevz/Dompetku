@@ -83,13 +83,27 @@
                     </ul>
                 </li>
                 <li
-                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['reports.index']) ? 'active' : '' }}  ">
-                    <a href="{{route('reports.index')}}" class='sidebar-link '>
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['import-excel']) ? 'active' : '' }}  ">
+                    <a href="{{route('import-excel')}}" class='sidebar-link '>
                         <i class="bi bi-file-earmark-arrow-up"></i>
-                        <span>Import CSV</span>
+                        <span>Import XLS/XLSX</span>
                     </a>
                 </li>
-
+                <li class="sidebar-title">User</li>
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['profile.index']) ? 'active' : '' }} ">
+                    <a href="{{route('profile.index')}}" class='sidebar-link '>
+                        <i class="bi bi-person"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li
+                    class="sidebar-item ">
+                    <a href="{{route('logout')}}" class='sidebar-link '>
+                        <i class="bi bi-box-arrow-left"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

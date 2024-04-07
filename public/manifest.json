@@ -1,0 +1,17 @@
+{
+    "name": "Dompetku",
+    "short_name": "Dompetku",
+    "start_url": "/index.php",
+    "background_color": "#6777ef",
+    "description": "Dompetku is an application that helps you keep track of your expenses and income.",
+    "display": "fullscreen",
+    "theme_color": "#ffffff",
+    "icons": [
+        {
+            "src": "logo.PNG",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

@@ -13,7 +13,7 @@
                 <form action="{{ route('recycle-bin.wallet.restore', ['id' => $wallet->id]) }}" method="POST">
                     @csrf
                     @method('POST')
-                    <button type="submit" class="btn btn-primary">Restore</button>
+                    <button type="submit" class="btn btn-success">Restore</button>
                 </form>
             </div>
         </div>

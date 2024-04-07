@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('vendor/mazer/extensions/filepond/filepond.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/mazer/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css') }}">
     <link rel="stylesheet" href="{{ asset('css/css.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/mazer/compiled/css/auth.css') }}">
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script><!-- PWA  -->
     <meta name="theme-color" content="#6777ef"/>

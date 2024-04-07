@@ -8,12 +8,13 @@ use App\Helpers\IconHelper;
 use App\Models\Category;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class WalletController extends Controller
 {
     public function index(Request $request){
-        $results = Wallet::withoutTrashed()->get();
+        $results = Wallet::withoutTrashed()->where('user_id', Auth::user()->id)->get();
 
         foreach ($results as $wallet) {
             $transactions = DB::table('transactions')->where('wallet_id', $wallet->id)
@@ -50,6 +51,7 @@ class WalletController extends Controller
     }
 
     public function store(Request $request){
+
         $validate = [
             'name' => 'required',
         ];
@@ -59,6 +61,7 @@ class WalletController extends Controller
         try {
             $wallet = new Wallet();
             $wallet->name = $request->name;
+            $wallet->user_id = Auth()->user()->id;
             $wallet->description = $request->description;
             $wallet->color = $request->color ? $request->color : 'green';
             $wallet->icon = $request->icon ? $request->icon : 'Activity';
@@ -103,7 +106,7 @@ class WalletController extends Controller
 
     public function destroy($id){
         try {
-            $wallet = Wallet::withoutTrashed()->find($id);
+            $wallet = Wallet::withoutTrashed()->where('user_id', Auth::user()->id)->find($id);
             $wallet->delete();
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
@@ -112,7 +115,7 @@ class WalletController extends Controller
     }
 
     public function transactions($walletId, Request $request){
-        $wallet = Wallet::withoutTrashed()->find($walletId);
+        $wallet = Wallet::withoutTrashed()->where('user_id', Auth::user()->id)->find($walletId);
 
         $transactions = DB::table('transactions')->where('wallet_id', $walletId)
             ->leftJoin('categories', 'categories.id', '=', 'transactions.category_id')
@@ -150,7 +153,7 @@ class WalletController extends Controller
 
 
     public function recycle_index(Request $request){
-        $results = Wallet::onlyTrashed()->get();
+        $results = Wallet::onlyTrashed()->where('user_id', Auth::user()->id)->get();
 
         foreach ($results as $wallet) {
             $transactions = DB::table('transactions')->where('wallet_id', $wallet->id)
@@ -177,7 +180,7 @@ class WalletController extends Controller
         ]);
     }
     public function recycle_transactions($walletId , Request $request){
-        $wallet = Wallet::onlyTrashed()->find($walletId);
+        $wallet = Wallet::onlyTrashed()->where('user_id', Auth::user()->id)->find($walletId);
 
         $transactions = DB::table('transactions')->where('wallet_id', $walletId)
             ->leftJoin('categories', 'categories.id', '=', 'transactions.category_id')
@@ -213,13 +216,13 @@ class WalletController extends Controller
     }
 
     public function recycle_restore($id){
-        $wallet = Wallet::onlyTrashed()->find($id);
+        $wallet = Wallet::onlyTrashed()->where('user_id', Auth::user()->id)->find($id);
         $wallet->restore();
         return redirect()->route('wallet.index')->with('success', 'Wallet Restored Successfully');
     }
 
     public function recycle_delete($id){
-        $wallet = Wallet::onlyTrashed()->find($id);
+        $wallet = Wallet::onlyTrashed()->where('user_id', Auth::user()->id)->find($id);
         $wallet->forceDelete();
         return redirect()->route('recycle-bin.wallet.index')->with('success', 'Wallet Permanently Deleted Successfully');
     }
