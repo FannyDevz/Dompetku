@@ -76,7 +76,6 @@ class ExcelImportController extends Controller
                 return redirect()->route('import-excel')->with('error', 'Amount '. $row[4] .' at row = '. $row_num . ' error. Data must numberic');
             }
 
-
             //Validasi Date
             function validateDate($date, $format = 'd/m/Y'){
                 $d = \DateTime::createFromFormat($format, $date);
