@@ -26,9 +26,7 @@
                                         <th>Category Name</th>
                                         <th>Category Type</th>
                                         <th>Amount</th>
-                                        <th>Tahun</th>
-                                        <th>Bulan</th>
-                                        <th>Tanggal</th>
+                                        <th>Date</th>
                                         <th>Note</th>
                                     </tr>
                                     </thead>
@@ -42,8 +40,6 @@
                                             <td>{{ $row[4] }}</td>
                                             <td>{{ $row[5] }}</td>
                                             <td>{{ $row[6] }}</td>
-                                            <td>{{ $row[7] }}</td>
-                                            <td>{{ $row[8] }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

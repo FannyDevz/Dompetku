@@ -39,9 +39,7 @@ class TemplateTransaction implements FromArray, WithColumnWidths, WithStyles
             'D' => 20,
             'E' => 20,
             'F' => 20,
-            'G' => 20,
-            'H' => 20,
-            'I' => 50,
+            'G' => 50,
         ];
     }
     /**

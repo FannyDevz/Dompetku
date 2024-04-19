@@ -21,10 +21,8 @@ class TransactionImport implements ToModel, WithStartRow
             'category_name' => $row[2],
             'category_type' => $row[3],
             'amount' => $row[4],
-            'year' => $row[5],
-            'month' => $row[6],
-            'date' => $row[7],
-            'note' => $row[8],
+            'date' => $row[5],
+            'note' => $row[6],
         ]);
     }
 

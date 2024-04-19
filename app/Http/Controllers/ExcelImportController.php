@@ -40,30 +40,58 @@ class ExcelImportController extends Controller
 
         foreach ($data as $key => $row) {
             $row_num = $key + 2;
-            $year = $row[5];
-            $month = $row[6];
-            $date = $row[7];
+            $date = $row[5];
 
-            if (!in_array( $row[3], ['Income', 'Outcome'])) {
-                return redirect()->route('import-excel')->with('error', 'Category Type '. $row[3] .' at row = '. $row_num . ' not created. Data must be Income or Outcome');
+            // Validasi Name
+            if ($row[0] == null) {
+                return redirect()->route('import-excel')->with('error', 'Name at row = '. $row_num . ' error. Data must not empty');
             }
-            if (!is_numeric($row[4])){
-                return redirect()->route('import-excel')->with('error', 'Amount '. $row[4] .' at row = '. $row_num . ' not created. Data must numberic');
+
+            // Validasi Wallet Name
+            if ($row[1] == null) {
+                return redirect()->route('import-excel')->with('error', 'Wallet Name at row = '. $row_num . ' error. Data must not empty');
             }
-            if ($year == null || $month == null || $date == null) {
-                return redirect()->route('import-excel')->with('error', 'Date at row = '. $row_num . ' not created. Data must have year, month and date');
-            } else if (!is_numeric($year) || !is_numeric($month) || !is_numeric($date)) {
-                return redirect()->route('import-excel')->with('error', 'Date at row = '. $row_num . ' not created. Data must numberic');
+
+            // Validasi Category Name
+            if ($row[2] == null) {
+                return redirect()->route('import-excel')->with('error', 'Category Name at row = '. $row_num . ' error. Data must not empty');
+            }
+
+            //Validasi Category Type
+            if ($row[3] == null) {
+                return redirect()->route('import-excel')->with('error', 'Category Type at row = '. $row_num . ' error. Data must not empty');
+            } elseif (!in_array(strtolower($row[3]), ['in', 'out'])) {
+                return redirect()->route('import-excel')->with('error', 'Category Type '. $row[3] .' at row = '. $row_num . ' error. Data must be Income or Outcome');
             } else {
-                if ($month < 1 || $month > 12) {
-                    return redirect()->route('import-excel')->with('error', 'Date at Month '. $month . ', row = '. $row_num . ' not created. Data month must between 1 and 12');
-                }
-                if ($date < 1 || $date > 31) {
-                    return redirect()->route('import-excel')->with('error', 'Date at Date '. $date . ', row = '. $row_num . ' not created. Data date must between 1 and 31');
+                $categoryType = strtolower($row[3]);
+                if ($categoryType == 'in') {
+                    $categoryType = 'Income';
+                } else {
+                    $categoryType = 'Outcome';
                 }
             }
 
-            $dateValue = Carbon::create($year, $month, $date)->toDateString();
+            //Validasi Amount
+            if (!is_numeric($row[4])){
+                return redirect()->route('import-excel')->with('error', 'Amount '. $row[4] .' at row = '. $row_num . ' error. Data must numberic');
+            }
+
+
+            //Validasi Date
+            function validateDate($date, $format = 'd/m/Y'){
+                $d = \DateTime::createFromFormat($format, $date);
+                if ($d && $d->format($format) === $date) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if ($date == null ) {
+                return redirect()->route('import-excel')->with('error', 'Date at row = '. $row_num . ' error. Data must have year, month and date');
+            } elseif (!validateDate($date)) {
+                return redirect()->route('import-excel')->with('error', 'Date at row = '. $row_num . ' error. Format must be d/m/Y');
+            }
+            $dateValue = Carbon::createFromFormat('d/m/Y', $date);
             //Check Wallet and Get Wallet ID
             $wallet = Wallet::withoutTrashed()->where('name', $row[1])->where('user_id', Auth::user()->id)->first();
             if (!$wallet) {
@@ -75,19 +103,19 @@ class ExcelImportController extends Controller
                         'color' => "purple",
                     ]);
                 } catch (\Throwable $th) {
-                    return redirect()->route('import-excel')->with('error', 'Wallet at row'. $row_num . ' not created');
+                    return redirect()->route('import-excel')->with('error', 'Wallet at row '. $row_num . ' not created');
                 }
             }
 
             $wallet_id = $wallet->id;
-
             //Check Category and Get Category ID
-            $category = Category::withoutTrashed()->where('name', $row[2])->where('type', $row[3])->first();
+            $category = Category::withoutTrashed()->where('name', $row[2])->where('type', $categoryType)->where('user_id', Auth::user()->id)->first();
             if (!$category) {
                 try {
                     $category = Category::create([
                         'name' => $row[2],
-                        'type' => $row[3],
+                        'user_id' => Auth::user()->id,
+                        'type' => $categoryType,
                     ]);
                 }
                 catch (\Throwable $th) {
@@ -105,7 +133,7 @@ class ExcelImportController extends Controller
                         'category_id' => $category_id,
                         'amount' => $row[4],
                         'date' => $dateValue,
-                        'note' => $row[8],
+                        'note' => $row[6],
                     ]);
                 } catch (\Throwable $th) {
                     return redirect()->route('import-excel')->with('error', 'Transaction at row'. $row_num . 'not created');
@@ -126,8 +154,6 @@ class ExcelImportController extends Controller
                 'Category Name',
                 'Category Type',
                 'Amount',
-                'Year',
-                'Month',
                 'Date',
                 'Note',
             ],
@@ -136,11 +162,9 @@ class ExcelImportController extends Controller
                     'Contoh Nama',
                     'Personal',
                     'Category Name',
-                    'Income/Outcome',
+                    'in/out',
                     1000000,
-                    2021,
-                    8,
-                    1,
+                    '01/01/2022',
                     'note jika ada'
                 ],
             ],

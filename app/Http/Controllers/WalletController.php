@@ -141,8 +141,8 @@ class WalletController extends Controller
         $wallet->totalOutcome = $totalOutcome;
         $wallet->totalBalance = $totalIncome - $totalOutcome;
 
-        $categories_outcome = Category::withoutTrashed()->where('type' , 'Outcome')->get();
-        $categories_income = Category::withoutTrashed()->where('type' , 'Income')->get();
+        $categories_outcome = Category::withoutTrashed()->where('type' , 'Outcome')->where('user_id' , Auth::user()->id)->get();
+        $categories_income = Category::withoutTrashed()->where('type' , 'Income')->where('user_id' , Auth::user()->id)->get();
 
         return view('user.wallet.transactions' , [
             'wallet' => $wallet,
