@@ -92,18 +92,24 @@ class ExcelImportController extends Controller
                 return redirect()->route('import-excel')->with('error', 'Date at row = '. $row_num . ' error. Format must be d/m/Y');
             }
             $dateValue = Carbon::createFromFormat('d/m/Y', $date);
+
             //Check Wallet and Get Wallet ID
             $wallet = Wallet::withoutTrashed()->where('name', $row[1])->where('user_id', Auth::user()->id)->first();
             if (!$wallet) {
-                try {
-                    $wallet = Wallet::create([
-                        'name' => $row[1],
-                        'user_id' => Auth::user()->id,
-                        'icon' => "Wallet",
-                        'color' => "purple",
-                    ]);
-                } catch (\Throwable $th) {
-                    return redirect()->route('import-excel')->with('error', 'Wallet at row '. $row_num . ' not created');
+                $checkWallet = Wallet::onlyTrashed()->where('name', $row[1])->where('user_id', Auth::user()->id)->first();
+                if ($checkWallet) {
+                    return redirect()->route('import-excel')->with('error', 'Wallet '. $row[1] . ' Already Exists in Trash Please Delete or Restore First');
+                } else{
+                    try {
+                        $wallet = Wallet::create([
+                            'name' => $row[1],
+                            'user_id' => Auth::user()->id,
+                            'icon' => "Wallet",
+                            'color' => "purple",
+                        ]);
+                    } catch (\Throwable $th) {
+                        return redirect()->route('import-excel')->with('error', 'Wallet at row '. $row_num . ' not created');
+                    }
                 }
             }
 
@@ -112,11 +118,16 @@ class ExcelImportController extends Controller
             $category = Category::withoutTrashed()->where('name', $row[2])->where('type', $categoryType)->where('user_id', Auth::user()->id)->first();
             if (!$category) {
                 try {
-                    $category = Category::create([
-                        'name' => $row[2],
-                        'user_id' => Auth::user()->id,
-                        'type' => $categoryType,
-                    ]);
+                    $category = Category::onlyTrashed()->where('name', $row[2])->where('type', $categoryType)->where('user_id', Auth::user()->id)->first();
+                    if ($category) {
+                        $category->restore();
+                    } else{
+                        $category = Category::create([
+                            'name' => $row[2],
+                            'user_id' => Auth::user()->id,
+                            'type' => $categoryType,
+                        ]);
+                    }
                 }
                 catch (\Throwable $th) {
                     return redirect()->route('import-excel')->with('error', 'Category at row'. $row_num . ' not created');

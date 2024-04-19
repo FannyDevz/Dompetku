@@ -28,12 +28,24 @@ class CategoryController extends Controller
         ]);
 
         try{
-            $category = new Category();
-            $category->name = $request->name;
-            $category->user_id = Auth::user()->id;
-            $category->description = $request->description;
-            $category->type = "Income";
-            $category->save();
+            $check = Category::onlyTrashed()->where('name', $request->name)->where('user_id', Auth::user()->id)->where('type', 'Income')->first();
+            if ($check) {
+                $check->restore();
+                return redirect()->back()->with('error', 'Category already exists, Now Category is restored');
+            } else{
+                $check = Category::where('name', $request->name)->where('user_id', Auth::user()->id)->where('type', 'Income')->first();
+                if ($check) {
+                    return redirect()->back()->with('error', 'Category already exists');
+                } else{
+
+                    $category = new Category();
+                    $category->name = $request->name;
+                    $category->user_id = Auth::user()->id;
+                    $category->description = $request->description;
+                    $category->type = "Income";
+                    $category->save();
+                }
+            }
         } catch (\Exception $exception){
             return redirect()->back()->with('error', $exception->getMessage());
         }
@@ -46,12 +58,23 @@ class CategoryController extends Controller
         ]);
 
         try {
-            $category = new Category();
-            $category->name = $request->name;
-            $category->user_id = Auth::user()->id;
-            $category->description = $request->description;
-            $category->type = "Outcome";
-            $category->save();
+            $check = Category::onlyTrashed()->where('name', $request->name)->where('user_id', Auth::user()->id)->where('type', 'Outcome')->first();
+            if ($check) {
+                $check->restore();
+                return redirect()->back()->with('error', 'Category already exists, Now Category is restored');
+            } else{
+                $check = Category::where('name', $request->name)->where('user_id', Auth::user()->id)->where('type', 'Outcome')->first();
+                if ($check) {
+                    return redirect()->back()->with('error', 'Category already exists');
+                } else{
+                    $category = new Category();
+                    $category->name = $request->name;
+                    $category->user_id = Auth::user()->id;
+                    $category->description = $request->description;
+                    $category->type = "Outcome";
+                    $category->save();
+                }
+            }
         } catch (\Exception $exception){
             return redirect()->back()->with('error', $exception->getMessage());
         }

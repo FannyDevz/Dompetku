@@ -59,6 +59,10 @@ class WalletController extends Controller
 
         $request->validate($validate);
 
+        $check = Wallet::onlyTrashed()->where('user_id', Auth()->user()->id);
+        if($check){
+            return redirect()->back()->with('error', 'Wallet '. $request->name . ' Already Exists in Trash Please Delete or Restore First');
+        }
         try {
             $wallet = new Wallet();
             $wallet->name = $request->name;
