@@ -59,21 +59,27 @@ class WalletController extends Controller
 
         $request->validate($validate);
 
-        $check = Wallet::onlyTrashed()->where('user_id', Auth()->user()->id);
+        $check = Wallet::where('name', $request->name)->where('user_id', Auth()->user()->id)->first();
         if($check){
-            return redirect()->back()->with('error', 'Wallet '. $request->name . ' Already Exists in Trash Please Delete or Restore First');
+            return redirect()->back()->with('error', 'Wallet '. $request->name . ' Already Exists');
+        } else{
+            $check = Wallet::onlyTrashed()->where('name', $request->name)->where('user_id', Auth()->user()->id)->first();
+            if ($check) {
+                return redirect()->back()->with('error', 'Wallet '. $request->name . ' Already Exists in Trash Please Delete or Restore First');
+            }
+            try {
+                $wallet = new Wallet();
+                $wallet->name = $request->name;
+                $wallet->user_id = Auth()->user()->id;
+                $wallet->description = $request->description;
+                $wallet->color = $request->color ? $request->color : 'green';
+                $wallet->icon = $request->icon ? $request->icon : 'Activity';
+                $wallet->save();
+            } catch (\Throwable $th) {
+                return redirect()->back()->with('error', $th->getMessage());
+            }
         }
-        try {
-            $wallet = new Wallet();
-            $wallet->name = $request->name;
-            $wallet->user_id = Auth()->user()->id;
-            $wallet->description = $request->description;
-            $wallet->color = $request->color ? $request->color : 'green';
-            $wallet->icon = $request->icon ? $request->icon : 'Activity';
-            $wallet->save();
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error', $th->getMessage());
-        }
+
         return redirect()->route('wallet.index')->with('success', 'Wallet Created Successfully');
     }
 
