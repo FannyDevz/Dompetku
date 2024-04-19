@@ -71,6 +71,7 @@ The project can now be accessed at [http://localhost:8000](http://localhost:8000
 ## Feature
 - [x] Mobile Support (PWA)
 - [x] Login with Remember
+- [x] Register
 - [x] Logout 
 - [x] Add Wallet / User 
 - [x] Edit Wallet 
