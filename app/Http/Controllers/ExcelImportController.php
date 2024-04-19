@@ -39,18 +39,35 @@ class ExcelImportController extends Controller
         $data = session('import_data');
 
         foreach ($data as $key => $row) {
-            $row_num = $key + 1;
+            $row_num = $key + 2;
             $year = $row[5];
             $month = $row[6];
             $date = $row[7];
 
+            if (!in_array( $row[3], ['Income', 'Outcome'])) {
+                return redirect()->route('import-excel')->with('error', 'Category Type '. $row[3] .' at row = '. $row_num . ' not created. Data must be Income or Outcome');
+            }
+            if (!is_numeric($row[4])){
+                return redirect()->route('import-excel')->with('error', 'Amount '. $row[4] .' at row = '. $row_num . ' not created. Data must numberic');
+            }
+            if ($year == null || $month == null || $date == null) {
+                return redirect()->route('import-excel')->with('error', 'Date at row = '. $row_num . ' not created. Data must have year, month and date');
+            } else if (!is_numeric($year) || !is_numeric($month) || !is_numeric($date)) {
+                return redirect()->route('import-excel')->with('error', 'Date at row = '. $row_num . ' not created. Data must numberic');
+            } else {
+                if ($month < 1 || $month > 12) {
+                    return redirect()->route('import-excel')->with('error', 'Date at Month '. $month . ', row = '. $row_num . ' not created. Data month must between 1 and 12');
+                }
+                if ($date < 1 || $date > 31) {
+                    return redirect()->route('import-excel')->with('error', 'Date at Date '. $date . ', row = '. $row_num . ' not created. Data date must between 1 and 31');
+                }
+            }
+
             $dateValue = Carbon::create($year, $month, $date)->toDateString();
             //Check Wallet and Get Wallet ID
-            $wallet = Wallet::where('name', $row[1])->first();
-
+            $wallet = Wallet::withoutTrashed()->where('name', $row[1])->where('user_id', Auth::user()->id)->first();
             if (!$wallet) {
                 try {
-
                     $wallet = Wallet::create([
                         'name' => $row[1],
                         'user_id' => Auth::user()->id,
@@ -60,15 +77,12 @@ class ExcelImportController extends Controller
                 } catch (\Throwable $th) {
                     return redirect()->route('import-excel')->with('error', 'Wallet at row'. $row_num . ' not created');
                 }
-
             }
 
             $wallet_id = $wallet->id;
 
             //Check Category and Get Category ID
-
-            $category = Category::where('name', $row[2])->where('type', $row[3])->first();
-
+            $category = Category::withoutTrashed()->where('name', $row[2])->where('type', $row[3])->first();
             if (!$category) {
                 try {
                     $category = Category::create([

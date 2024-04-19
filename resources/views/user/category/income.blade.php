@@ -90,8 +90,8 @@
                                         <td>{{ $result->name }}</td>
                                         <td>{{ $result->description }}</td>
                                         <td class="text-nowrap">
-                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $result->id }}">Edit</button>
-                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $result->id }}">Delete</button>
+                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $result->id }}"><i class="bi bi-pencil-square"></i></button>
+                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $result->id }}"><i class="bi bi-trash"></i></button>
 
                                         </td>
                                     </tr>

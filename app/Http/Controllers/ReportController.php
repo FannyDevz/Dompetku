@@ -21,24 +21,25 @@ class ReportController extends Controller
             $transactions = DB::table('transactions')
                 ->select('categories.name as category_name', 'categories.type as category_type', DB::raw('count(*) as transaction_count'), DB::raw('sum(amount) as total_amount'))
                 ->leftJoin('categories', 'categories.id', '=', 'transactions.category_id')
+                ->whereNull('transactions.deleted_at')
                 ->where('transactions.wallet_id', $wallet_id);
 
             if ($request->get('month') || $request->get('year')) {
-
-                if ($request->get('month')) {
-                    if ($request->get('month') != 'all') {
-                        $transactions = $transactions->whereMonth('date', $request->get('month'));
-                    }
-                }
                 if ($request->get('year')) {
                     if ($request->get('year') != 'all') {
                         $transactions = $transactions->whereYear('date', $request->get('year'));
                     }
                 }
-            };
+                if ($request->get('month')) {
+                    if ($request->get('month') != 'all') {
+                        $transactions = $transactions->whereMonth('date', $request->get('month'));
+                    }
+                }
+            }
 
-            $transactions = $transactions->groupBy('categories.type', 'transactions.category_id')
+            $transactions = $transactions->groupBy('categories.type', 'transactions.category_id', 'categories.name')
                 ->get();
+
 
             $transactionData = [
                 'income' => [],

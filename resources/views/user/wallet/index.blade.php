@@ -80,7 +80,7 @@
                 @endforeach
                 @else
                     <div class="col-12 ">
-                        <div class="card zoom p-2">
+                        <div class="card p-2">
                             <div class="card-body">
                                 <div class="row my-2">
                                     <div class="col-md-12  d-flex justify-content-center">

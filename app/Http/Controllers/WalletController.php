@@ -19,6 +19,7 @@ class WalletController extends Controller
         foreach ($results as $wallet) {
             $transactions = DB::table('transactions')->where('wallet_id', $wallet->id)
                 ->leftJoin('categories', 'categories.id', '=', 'transactions.category_id')
+                ->whereNull('transactions.deleted_at')
                 ->select('transactions.*', 'categories.name as category_name', 'categories.type as category_type')->get();
 
             $totalIncome = 0;
@@ -119,6 +120,7 @@ class WalletController extends Controller
 
         $transactions = DB::table('transactions')->where('wallet_id', $walletId)
             ->leftJoin('categories', 'categories.id', '=', 'transactions.category_id')
+            ->whereNull('transactions.deleted_at')
             ->select('transactions.*', 'categories.id as category_id', 'categories.name as category_name', 'categories.type as category_type');
         $transactions = $this->filtering( $transactions, $request );
 

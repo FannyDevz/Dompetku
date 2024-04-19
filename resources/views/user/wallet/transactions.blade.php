@@ -124,11 +124,11 @@
                                 <table class="table table-hover">
                                     <tbody>
                                     @foreach($transactions as $key => $transaction)
-                                        <tr class="{{ $transaction->category_type === 'Income' ? '' : 'bg-warning bg-opacity-25' }}" data-bs-toggle="modal" data-bs-target="#detailModal{{ $transaction->id }}">
+                                        <tr class="{{ $transaction->deleted_at == null ? ($transaction->category_type === 'Income' ? '' : 'bg-warning bg-opacity-25') : 'bg-danger bg-opacity-25' }}" data-bs-toggle="modal" data-bs-target="#detailModal{{ $transaction->id }}">
 
                                             <td>{{ $transaction->name }}
                                                 <br>
-                                                <span class="text-muted text-sm">{{ $transaction->date }}</span>
+                                                <span class="text-muted text-sm text-nowrap">{{ $transaction->date }}</span>
                                                 <br>
                                                 <span class="text-muted text-sm">{{ $transaction->note }}</span>
                                             </td >
@@ -139,8 +139,16 @@
                                                     {{ $transaction->category_name }}
                                                 </div>
                                             </td>
+                                            @if (Request::routeIs('wallet.transactions'))
+                                            <td>
+                                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModalTransaction{{ $transaction->id }}"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                            @endif
                                         </tr>
                                         @include('user.wallet.layout.modal-detail-transaction')
+                                        @if (Request::routeIs('wallet.transactions'))
+                                        @include('user.wallet.layout.modal-delete-transaction')
+                                        @endif
                                     @endforeach
                                     </tbody>
                                 </table>
